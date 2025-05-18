@@ -5,6 +5,7 @@ import concesionarioApp.dominio.Persona;
 import concesionarioApp.dominio.Vehiculo;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GestorP11 implements GestorConcesionario {
@@ -50,17 +51,32 @@ public class GestorP11 implements GestorConcesionario {
 
     @Override
     public List<String> obtenerVehiculosPropietario(String dniPropietario) {
-        return vehiculoDAO.getVehiculosPorDni(dniPropietario);
+        List<String> vehiculosString = new ArrayList<>();
+        List<Vehiculo> vehiculos = vehiculoDAO.getVehiculosPorDni(dniPropietario);
+        if (!vehiculos.isEmpty()) {
+            vehiculosString.add(vehiculos.toString());
+        }
+        return vehiculosString;
     }
 
     @Override
     public List<String> obtenerVehiculosMarca(String marca) {
-        return vehiculoDAO.getVehiculosPorMarca(marca);
+        List<String> vehiculosString = new ArrayList<>();
+        List<Vehiculo> vehiculos = vehiculoDAO.getVehiculosPorMarca(marca);
+        if (!vehiculos.isEmpty()) {
+            vehiculosString.add(vehiculos.toString());
+        }
+        return vehiculosString;
     }
 
     @Override
     public List<String> obtenerVehiculos() {
-        return vehiculoDAO.getVehiculos();
+        List<String> vehiculosString = new ArrayList<>();
+        List<Vehiculo> vehiculos = vehiculoDAO.getVehiculos();
+        if (!vehiculos.isEmpty()) {
+            vehiculosString.add(vehiculos.toString());
+        }
+        return vehiculosString;
     }
 
     @Override

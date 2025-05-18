@@ -8,9 +8,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class PropietarioDAO {
-    private final Connection conn;
     private static final Integer OK = 0;
     private static final Integer KO = -1;
+
+    private final Connection conn;
 
     public PropietarioDAO(Connection conn) {
         this.conn = conn;

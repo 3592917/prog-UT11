@@ -74,9 +74,8 @@ public class VehiculoDAO {
         return resultado;
     }
 
-    public List<String> getVehiculosPorDni(String dni) {
+    public List<Vehiculo> getVehiculosPorDni(String dni) {
         List<Vehiculo> vehiculos = new ArrayList<>();
-        List<String> vehiculosString = new ArrayList<>();
         try {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(
@@ -85,14 +84,11 @@ public class VehiculoDAO {
             while (rs.next()) {
                 vehiculos.add(mapper.toObject(rs));
             }
-            if (!vehiculos.isEmpty()) {
-                vehiculosString.add(vehiculos.toString());
-            }
             stmt.close();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        return vehiculosString;
+        return vehiculos;
     }
 
     public Integer eliminarVehiculo(String matricula) {
@@ -107,9 +103,8 @@ public class VehiculoDAO {
         return resultado;
     }
 
-    public List<String> getVehiculosPorMarca(String marca) {
+    public List<Vehiculo> getVehiculosPorMarca(String marca) {
         List<Vehiculo> vehiculos = new ArrayList<>();
-        List<String> vehiculosString = new ArrayList<>();
         try {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(
@@ -118,19 +113,15 @@ public class VehiculoDAO {
             while (rs.next()) {
                 vehiculos.add(mapper.toObject(rs));
             }
-            if (!vehiculos.isEmpty()) {
-                vehiculosString.add(vehiculos.toString());
-            }
             stmt.close();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        return vehiculosString;
+        return vehiculos;
     }
 
-    public List<String> getVehiculos() {
+    public List<Vehiculo> getVehiculos() {
         List<Vehiculo> vehiculos = new ArrayList<>();
-        List<String> vehiculosString = new ArrayList<>();
         try {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(
@@ -139,13 +130,10 @@ public class VehiculoDAO {
             while (rs.next()) {
                 vehiculos.add(mapper.toObject(rs));
             }
-            if (!vehiculos.isEmpty()) {
-                vehiculosString.add(vehiculos.toString());
-            }
             stmt.close();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        return vehiculosString;
+        return vehiculos;
     }
 }
