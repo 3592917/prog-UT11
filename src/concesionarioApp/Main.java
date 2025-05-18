@@ -2,7 +2,13 @@ package concesionarioApp;
 
 import concesionarioApp.dominio.Persona;
 import concesionarioApp.dominio.Vehiculo;
+import concesionarioApp.gestorBBDD.ConexionBBDD;
+import concesionarioApp.gestorBBDD.GestorP11;
+import concesionarioApp.gestorBBDD.PropietarioDAO;
+import concesionarioApp.gestorBBDD.VehiculoDAO;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -23,7 +29,15 @@ public class Main {
     }
 
     private static void initialize() {
-        // Aquí debería ir tu inicialización de objetos para la conexión, DAOs y gestor...
+        ConexionBBDD conexionBBDD = new ConexionBBDD();
+        try {
+            Connection conn = conexionBBDD.getConexion();
+            VehiculoDAO vehiculoDAO = new VehiculoDAO(conn);
+            PropietarioDAO propietarioDAO = new PropietarioDAO(conn);
+            gestor = new GestorP11(vehiculoDAO, propietarioDAO);
+        } catch (SQLException e){
+            System.out.println("Mensaje: " + e.getMessage() + ", con código: " + e.getErrorCode());
+        }
     }
 
     private static void mostrarMenu() {

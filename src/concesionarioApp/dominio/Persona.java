@@ -14,11 +14,10 @@ public class Persona {
 
     @Override
     public String toString() {
-        return "Propietario{" +
-                "dni='" + dni + '\'' +
-                ", nombre='" + nombre + '\'' +
-                ", apellidos='" + apellidos + '\'' +
-                '}';
+        return "Propietario: " + "\n" +
+                "DNI: " + dni + "\n" +
+                "Nombre: " + nombre + "\n" +
+                "Apellidos: " + apellidos + "\n";
     }
 
     public String getDni() {
