@@ -14,10 +14,12 @@ public class Persona {
 
     @Override
     public String toString() {
-        return "Propietario: " + "\n" +
-                "DNI: " + dni + "\n" +
-                "Nombre: " + nombre + "\n" +
-                "Apellidos: " + apellidos + "\n";
+        return (dni != null || nombre != null || apellidos != null) ?
+                "Propietario: " + "\n" +
+                        ((dni != null) ? ( "DNI: " + dni + "\n") : "") +
+                        ((nombre != null) ? ( "Nombre: " + nombre + "\n") : "") +
+                        ((apellidos != null) ? ( "Apellidos: " + apellidos + "\n") : "")
+        : "";
     }
 
     public String getDni() {

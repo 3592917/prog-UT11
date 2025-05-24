@@ -2,7 +2,6 @@ package concesionarioApp.gestorBBDD;
 
 import concesionarioApp.dominio.Vehiculo;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -10,25 +9,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class VehiculoDAO {
-    private static final Integer OK = 0;
-    private static final Integer KO = -1;
 
-    private final Connection conn;
+    private final ConexionBBDD conn;
 
-    PropietarioDAO propietarioDAO;
-    VehiculoMapper mapper;
+    private final VehiculoMapper mapper;
 
-    public VehiculoDAO(Connection conn) {
+    public VehiculoDAO(ConexionBBDD conn) {
         this.conn = conn;
-        this.propietarioDAO = new PropietarioDAO(conn);
-        this.mapper = new VehiculoMapper(propietarioDAO);
+        this.mapper = new VehiculoMapper();
     }
 
     public Integer insertarVehiculo(Vehiculo nuevoVehiculo) {
-        int resultado = KO;
+        int resultado = 0;
         try {
-            Statement stmt = conn.createStatement();
-            stmt.executeUpdate("INSERT INTO vehiculos " +
+            Statement stmt = conn.getConexion().createStatement();
+            resultado = stmt.executeUpdate("INSERT INTO vehiculos " +
                     "(matricula, " +
                     "kilometraje, " +
                     "marca, " +
@@ -40,7 +35,7 @@ public class VehiculoDAO {
                     "'" + nuevoVehiculo.getMarca() + "', " +
                     nuevoVehiculo.getAnyoMatriculacion() + ", " +
                     nuevoVehiculo.getPrecioVenta() + ");");
-            resultado = OK;
+
             stmt.close();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -51,8 +46,19 @@ public class VehiculoDAO {
     public Vehiculo getVehiculoPorMatricula(String matricula) {
         Vehiculo vehiculo = null;
         try {
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM vehiculos where matricula = '" + matricula + "';");
+            Statement stmt = conn.getConexion().createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT " +
+                    "   v.matricula, " +
+                    "   v.kilometraje, " +
+                    "   v.marca, " +
+                    "    v.anio_matriculacion, " +
+                    "    v.precio_venta, " +
+                    "    p.dni, " +
+                    "    p.nombre, " +
+                    "    p.apellidos " +
+                    "FROM vehiculos v " +
+                    "LEFT JOIN propietarios p ON p.dni = v.dni_prop " +
+                    " WHERE matricula = '" + matricula + "';");
             vehiculo = rs.next() ? mapper.toObject(rs) : null;
             stmt.close();
         } catch (SQLException e) {
@@ -62,11 +68,10 @@ public class VehiculoDAO {
     }
 
     public Integer updatePropietarioMatriculaDNI(String dni, String matricula) {
-        int resultado = KO;
+        int resultado = 0;
         try {
-            Statement stmt = conn.createStatement();
-            stmt.executeUpdate("UPDATE vehiculos SET dni_prop = '" + dni + "' WHERE matricula = '" + matricula + "';");
-            resultado = OK;
+            Statement stmt = conn.getConexion().createStatement();
+            resultado = stmt.executeUpdate("UPDATE vehiculos SET dni_prop = '" + dni + "' WHERE matricula = '" + matricula + "';");
             stmt.close();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -77,9 +82,20 @@ public class VehiculoDAO {
     public List<Vehiculo> getVehiculosPorDni(String dni) {
         List<Vehiculo> vehiculos = new ArrayList<>();
         try {
-            Statement stmt = conn.createStatement();
+            Statement stmt = conn.getConexion().createStatement();
             ResultSet rs = stmt.executeQuery(
-                    "SELECT * FROM vehiculos where dni_prop = '" + dni + "';"
+                    "SELECT " +
+                            "   v.matricula, " +
+                            "   v.kilometraje, " +
+                            "   v.marca, " +
+                            "    v.anio_matriculacion, " +
+                            "    v.precio_venta, " +
+                            "    p.dni, " +
+                            "    p.nombre, " +
+                            "    p.apellidos " +
+                            "FROM vehiculos v " +
+                            "LEFT JOIN propietarios p ON p.dni = v.dni_prop " +
+                            " WHERE dni_prop = '" + dni + "';"
             );
             while (rs.next()) {
                 vehiculos.add(mapper.toObject(rs));
@@ -94,7 +110,7 @@ public class VehiculoDAO {
     public Integer eliminarVehiculo(String matricula) {
         int resultado = 0;
         try {
-            Statement stmt = conn.createStatement();
+            Statement stmt = conn.getConexion().createStatement();
             resultado = stmt.executeUpdate("DELETE FROM vehiculos WHERE matricula = '" + matricula + "';");
             stmt.close();
         } catch (SQLException e) {
@@ -106,9 +122,20 @@ public class VehiculoDAO {
     public List<Vehiculo> getVehiculosPorMarca(String marca) {
         List<Vehiculo> vehiculos = new ArrayList<>();
         try {
-            Statement stmt = conn.createStatement();
+            Statement stmt = conn.getConexion().createStatement();
             ResultSet rs = stmt.executeQuery(
-                    "SELECT * FROM vehiculos where marca = '" + marca + "';"
+                    "SELECT " +
+                            "   v.matricula, " +
+                            "   v.kilometraje, " +
+                            "   v.marca, " +
+                            "    v.anio_matriculacion, " +
+                            "    v.precio_venta, " +
+                            "    p.dni, " +
+                            "    p.nombre, " +
+                            "    p.apellidos " +
+                            "FROM vehiculos v " +
+                            "LEFT JOIN propietarios p ON p.dni = v.dni_prop " +
+                            "WHERE marca = '" + marca + "';"
             );
             while (rs.next()) {
                 vehiculos.add(mapper.toObject(rs));
@@ -123,9 +150,19 @@ public class VehiculoDAO {
     public List<Vehiculo> getVehiculos() {
         List<Vehiculo> vehiculos = new ArrayList<>();
         try {
-            Statement stmt = conn.createStatement();
+            Statement stmt = conn.getConexion().createStatement();
             ResultSet rs = stmt.executeQuery(
-                    "SELECT * FROM vehiculos;"
+                    "SELECT " +
+                            "   v.matricula, " +
+                            "   v.kilometraje, " +
+                            "   v.marca, " +
+                            "    v.anio_matriculacion, " +
+                            "    v.precio_venta, " +
+                            "    p.dni, " +
+                            "    p.nombre, " +
+                            "    p.apellidos " +
+                            "FROM vehiculos v " +
+                            "LEFT JOIN propietarios p ON p.dni = v.dni_prop;"
             );
             while (rs.next()) {
                 vehiculos.add(mapper.toObject(rs));
@@ -135,5 +172,14 @@ public class VehiculoDAO {
             System.out.println(e.getMessage());
         }
         return vehiculos;
+    }
+
+    public void cerrarConexion() {
+        try {
+            conn.cerrarConexion();
+        } catch (SQLException e) {
+            System.out.println("Error al cerrar la conexión: " + e.getMessage() +
+            " ," + e.getErrorCode());
+        }
     }
 }

@@ -4,16 +4,12 @@ import concesionarioApp.GestorConcesionario;
 import concesionarioApp.dominio.Persona;
 import concesionarioApp.dominio.Vehiculo;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class GestorP11 implements GestorConcesionario {
-    VehiculoDAO vehiculoDAO;
-    PropietarioDAO propietarioDAO;
-    ConexionBBDD conexionBBDD = new ConexionBBDD();
-
-    private static final Integer KO = -1;
+    private final VehiculoDAO vehiculoDAO;
+    private final PropietarioDAO propietarioDAO;
 
     public GestorP11(VehiculoDAO vehiculoDAO, PropietarioDAO propietarioDAO) {
         this.vehiculoDAO = vehiculoDAO;
@@ -22,29 +18,38 @@ public class GestorP11 implements GestorConcesionario {
 
     @Override
     public Integer insertarPropietario(Persona propietario) {
-        Integer resultado = KO;
+        int resultado = -1;
             if (propietario != null) {
-                resultado = propietarioDAO.insertarPropietario(propietario);
+                Integer filas = propietarioDAO.insertarPropietario(propietario);
+                if(filas != null && filas > 0){
+                    resultado = 0;
+                }
             }
         return resultado;
     }
 
     @Override
     public Integer insertarVehiculo(Vehiculo vehiculo) {
-        Integer resultado = KO;
+        int resultado = -1;
         if (vehiculo != null) {
-            resultado = vehiculoDAO.insertarVehiculo(vehiculo);
+            Integer filas = vehiculoDAO.insertarVehiculo(vehiculo);
+            if(filas != null && filas > 0){
+                resultado = 0;
+            }
         }
         return resultado;
     }
 
     @Override
     public Integer actualizarPropietarioVehiculo(String dniPropietario, String matricula) {
-        Integer resultado = KO;
+        int resultado = -1;
         Vehiculo vehiculo = vehiculoDAO.getVehiculoPorMatricula(matricula);
         Persona propietario = propietarioDAO.getPersonaPorDNI(dniPropietario);
         if (vehiculo != null && propietario != null) {
-            resultado = vehiculoDAO.updatePropietarioMatriculaDNI(dniPropietario, matricula);
+            Integer filas = vehiculoDAO.updatePropietarioMatriculaDNI(dniPropietario, matricula);
+            if(filas != null && filas > 0){
+                resultado = 0;
+            }
         }
         return resultado;
     }
@@ -99,10 +104,7 @@ public class GestorP11 implements GestorConcesionario {
 
     @Override
     public void cerrarConexion() {
-        try {
-            conexionBBDD.cerrarConexion();
-        } catch (SQLException e) {
-            System.out.println("Mensaje: " + e.getMessage() + ", con código: " + e.getErrorCode());
-        }
+        vehiculoDAO.cerrarConexion();
+        propietarioDAO.cerrarConexion();
     }
 }

@@ -83,6 +83,6 @@ public class Vehiculo {
                 "Precio de venta: " + precioVenta + "\n" +
                 "Kilometraje: " + kilometraje + "\n" +
                 ((propietario != null) ?
-                        ("Propietario: " + propietario + "\n") : "\n");
+                        (propietario + "\n") : "\n");
     }
 }
